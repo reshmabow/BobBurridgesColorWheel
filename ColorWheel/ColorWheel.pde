@@ -17,12 +17,15 @@ void draw() {
 
 void keyPressed()
 {
-    if (key == ',')
+    if (key == CODED)
     {
-        bob.decBase();
-    } else if (key == '.')
-    {
-        bob.incBase();
+        if (keyCode == LEFT)
+        {
+            bob.decBase();
+        } else if (keyCode == RIGHT)
+        {
+            bob.incBase();
+        }
     }
 }
 
@@ -124,7 +127,7 @@ class BobsColorWheel
 
     static final int COLOR_LABEL_ANGLE_FREQ = 45;
     static final int GLOBAL_WHEEL_ROTATION = 180;
-    
+
     public BobsColorWheel(int x, int y)
     {
         setBase(0); 
@@ -215,9 +218,9 @@ class BobsColorWheel
     }
     private void drawColorWheel()
     {
-      for (int i=0; i <= 360; i++) {
+        for (int i=0; i <= 360; i++) {
             drawColorSegment(i);
-        }   
+        }
     }
     private void drawColorSegment(int segment)
     {
