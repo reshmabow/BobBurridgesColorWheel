@@ -205,30 +205,31 @@ class BobsColorWheel
         pushMatrix();
         translate(location.x, location.y); 
         for (int i=0; i <= 360; i++) {
-            color fillColor = color(i, 100, 60, 1.0); 
-            fill(fillColor); 
-            stroke(fillColor); 
-            pushMatrix(); 
-            rotate(radians(i+180)); 
-            rect(0, 25, 5, 25); 
-            if (bob.getBaseValue() == i)
-            {
-                drawBaseColorPaddle();
-            } 
-            if (i%45 == 0)
-            { 
-                drawColorValueText(i);
-            }
-            popMatrix();
+            drawColorSegment(i);
         }
         drawFocalColorPaddle();
         drawSpice1ColorPaddle();
         drawSpice2ColorPaddle();
         popMatrix();
     }
-    void drawBaseColorPaddle()
+    private void drawColorSegment(int segment)
     {
-        rect(0, 100, 45, 12);
+        color fillColor = color(segment, 100, 60, 1.0); 
+        fill(fillColor); 
+        stroke(fillColor); 
+        pushMatrix(); 
+        rotate(radians(segment+180)); 
+        rect(0, 25, 5, 25); 
+        drawBaseColorPaddle(segment);
+        drawColorValueText(segment);
+        popMatrix();
+    }
+    void drawBaseColorPaddle(int segment)
+    {
+        if (bob.getBaseValue() == segment)
+        {
+            rect(0, 100, 45, 12);
+        }
     }
 
     void drawFocalColorPaddle()
@@ -254,11 +255,14 @@ class BobsColorWheel
         rect(0, 90, paddleWidth, 5);
         popMatrix();
     }
-    void drawColorValueText(int i)
+    void drawColorValueText(int segment)
     {
-        fill(0);
-        stroke(0);
-        textSize(16);
-        text(i, 0, 80);
+        if (segment%45 == 0)
+        { 
+            fill(0);
+            stroke(0);
+            textSize(16);
+            text(segment, 0, 80);
+        }
     }
 }
