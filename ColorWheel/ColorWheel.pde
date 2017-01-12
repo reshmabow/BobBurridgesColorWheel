@@ -9,7 +9,7 @@ void setup() {
     colorMode(HSB, 360, 100, 100, 1.0);
     bob = new BobsColorWheel(180, 180);
     thumbnail = new Thumbnail(350, 50, 300, 300);
-    paintingSketch = new PaintingSketch(0, 400, 600, 300);
+    paintingSketch = new PaintingSketch(10, 400, 680, 280);
 }
 void draw() {
     background(200);
@@ -154,6 +154,8 @@ class BobsColorWheel
     static final int COLOR_LABEL_ANGLE_FREQ = 45;
     static final int GLOBAL_WHEEL_ROTATION = 180;
 
+    ColorVariater baseColorVariater;
+
     public BobsColorWheel(int x, int y)
     {
         setBase(0); 
@@ -162,6 +164,7 @@ class BobsColorWheel
         setSpice1(base + spiceAngle);
         setSpice2(base - spiceAngle);
         movePaddlesFast = true;
+        baseColorVariater = new ColorVariater(20, 0, 0, 0.002);
     }
 
     void decBase()
@@ -197,6 +200,10 @@ class BobsColorWheel
     color getBaseColor()
     {
         return color(base, saturation, brightness, 1.0);
+    }
+    color getBaseColorVariation()
+    {
+        return baseColorVariater.getRandomColorVariation(color(base, saturation, brightness, 1.0));
     }
     color getFocalColor()
     {
@@ -314,6 +321,66 @@ class BobsColorWheel
     }
 }
 
+class ColorVariater
+{
+    int hueVariation;
+    int brightnessVariation; 
+    int saturationVariation;
+    float alphaVariation;
+
+    public ColorVariater(int _hueVariation, int _brightnessVariation, int _saturationVariation, float _alphaVariation)
+    {
+        hueVariation = _hueVariation;
+        brightnessVariation = _brightnessVariation;
+        saturationVariation = _saturationVariation;
+        alphaVariation = _alphaVariation;
+    }
+    color getRandomColorVariation(color baseColor)
+    {
+        //int hueVariation = 0;
+        int hue = int(hue(baseColor) + random(0, hueVariation));
+        hue = bowlimit(hue, 0, 360);
+
+        //int brightnessVariation = 0;
+        int brightness = int(brightness(baseColor) + random(0, brightnessVariation));
+        brightness = bowlimit(brightness, 0, 100);
+
+        //int saturationVariation = 0;
+        int saturation = int(saturation(baseColor) + random(0, saturationVariation));
+        saturation = bowlimit(saturation, 0, 100);
+
+        //float alphaVariation = 0.002;
+        float alpha = alpha(baseColor) + random(0, alphaVariation);
+        alpha = bowlimit(alpha, 0.0, 0.5);
+
+        color colorVariation = color(hue, saturation, brightness, alpha);
+        return colorVariation;
+    }
+    int bowlimit(int raw, int low, int hi)
+    {
+        if (raw < low)
+        {
+            return low;
+        }
+        if (raw > hi)
+        {
+            return hi;
+        }
+        return raw;
+    }
+    float bowlimit(float raw, float low, float hi)
+    {
+        if (raw < low)
+        {
+            return low;
+        }
+        if (raw > hi)
+        {
+            return hi;
+        }
+        return raw;
+    }
+}
 
 class PaintingSketch
 {
@@ -326,13 +393,25 @@ class PaintingSketch
     public PaintingSketch(int x, int y, int _w, int _h)
     {
         loc = new PVector(x, y);
-        w=_w;
-        h=_h;
-        // debugging only
+        w = _w;
+        h = _h;
         baseColorRects = new ArrayList<MyRect>();
-        baseColorRects.add(new MyRect(0, 0, 200, 200, color(0, 90, 60, 1.0)));
+        createBaseColorRects();
     }
-
+    private void createBaseColorRects()
+    {
+        baseColorRects.add(new MyRect(0, 0, w, h, 120));
+        for (int i=0; i < NUM_BASECOLOR_RECTS; i++)
+        {
+            int rx = int(random(w));
+            int ry = int(random(h));
+            int rw = int(random(w-rx));
+            int rh = int(random(h-ry));
+            int rc = bob.getBaseColorVariation();
+            MyRect mr = new MyRect(rx, ry, rw, rh, rc);
+            baseColorRects.add(mr);
+        }
+    }
     void draw()
     {
         rectMode(CORNER);
