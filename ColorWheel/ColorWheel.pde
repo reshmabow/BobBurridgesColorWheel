@@ -171,10 +171,10 @@ class BobsColorWheel
         setSpice1(base + spiceAngle);
         setSpice2(base - spiceAngle);
         movePaddlesFast = true;
-        baseColorVariater = new ColorVariater(20, 0, 0, 0.002);
-        focalColorVariater = new ColorVariater(20, 0, 0, 0.002);
-        spice1ColorVariater = new ColorVariater(20, 0, 0, 0.002);
-        spice2ColorVariater = new ColorVariater(20, 0, 0, 0.002);
+        baseColorVariater = new ColorVariater(20, 10, 10, 0.002);
+        focalColorVariater = new ColorVariater(20, 10, 10, 0.002);
+        spice1ColorVariater = new ColorVariater(20, 10, 10, 0.002);
+        spice2ColorVariater = new ColorVariater(20, 10, 10, 0.002);
     }
     boolean isDirty() {
         return isDirty;
@@ -370,19 +370,16 @@ class ColorVariater
     }
     color getRandomColorVariation(color baseColor)
     {
-        //int hueVariation = 0;
         int hue = int(hue(baseColor) + random(0, hueVariation));
         hue = bowlimit(hue, 0, 360);
 
-        //int brightnessVariation = 0;
         int brightness = int(brightness(baseColor) + random(0, brightnessVariation));
         brightness = bowlimit(brightness, 0, 100);
 
-        //int saturationVariation = 0;
         int saturation = int(saturation(baseColor) + random(0, saturationVariation));
         saturation = bowlimit(saturation, 0, 100);
 
-        //float alphaVariation = 0.002;
+
         float alpha = alpha(baseColor) + random(0, alphaVariation);
         alpha = bowlimit(alpha, 0.0, 0.5);
 
@@ -465,43 +462,58 @@ class PaintingSketch
     }
     private void createFocalColorRects()
     {
-        for (int i=0; i < NUM_FOCALCOLOR_RECTS; i++)
-        {
-            int rx = int(random(w));
-            int ry = int(random(h));
-            int rw = int(random(w-rx));
-            int rh = int(random(h-ry));
-            int rc = bob.getFocalColorVariation();
-            MyRect mr = new MyRect(rx, ry, rw, rh, rc);
-            focalColorRects.add(mr);
-        }
+        int focalMaxWidth = 80;
+        int focalMaxHeight = 80;
+
+        //for (int i=0; i < NUM_FOCALCOLOR_RECTS; i++)
+        //{
+        //    int rx = int(random(w));
+        //    int ry = int(random(h));
+        //    int rw = int(random(min(w-rx, focalMaxWidth)));
+        //    int rh = int(random(min(h-ry, focalMaxHeight)));
+        //    int rc = bob.getFocalColorVariation();
+        //    MyRect mr = new MyRect(rx, ry, rw, rh, rc);
+        //    focalColorRects.add(mr);
+        //}
+        focalColorRects.addAll(
+            createColorRectsHelper(NUM_FOCALCOLOR_RECTS, focalMaxWidth, focalMaxHeight, bob.getFocalColorVariation())
+            );
     }
     private void createSpice1ColorRects()
     {
-        for (int i=0; i < NUM_SPICECOLOR_RECTS/2; i++)
-        {
-            int rx = int(random(w));
-            int ry = int(random(h));
-            int rw = int(random(w-rx));
-            int rh = int(random(h-ry));
-            int rc = bob.getSpice1ColorVariation();
-            MyRect mr = new MyRect(rx, ry, rw, rh, rc);
-            spice1ColorRects.add(mr);
-        }
+        int spiceMaxWidth = 20;
+        int spiceMaxHeight = 20;
+
+        spice1ColorRects.addAll(
+            createColorRectsHelper(NUM_SPICECOLOR_RECTS/2, spiceMaxWidth, spiceMaxHeight, bob.getSpice1ColorVariation())
+            );
     }
 
     private void createSpice2ColorRects()
     {
-        for (int i=0; i < NUM_SPICECOLOR_RECTS/2; i++)
+        int spiceMaxWidth = 20;
+        int spiceMaxHeight = 20;
+
+        spice2ColorRects.addAll(
+            createColorRectsHelper(NUM_SPICECOLOR_RECTS/2, spiceMaxWidth, spiceMaxHeight, bob.getSpice2ColorVariation())
+            );
+    }
+    private  List<MyRect> createColorRectsHelper(
+        int numRects, 
+        int maxWidth, int maxHeight, 
+        color c)
+    {
+        List<MyRect> createdRects = new ArrayList<MyRect>();
+        for (int i=0; i < numRects; i++)
         {
             int rx = int(random(w));
             int ry = int(random(h));
-            int rw = int(random(w-rx));
-            int rh = int(random(h-ry));
-            int rc = bob.getSpice2ColorVariation();
-            MyRect mr = new MyRect(rx, ry, rw, rh, rc);
-            spice2ColorRects.add(mr);
+            int rw = int(random(min(w-rx, maxWidth)));
+            int rh = int(random(min(h-ry, maxHeight)));
+            MyRect mr = new MyRect(rx, ry, rw, rh, c);
+            createdRects.add(mr);
         }
+        return createdRects;
     }
 
     void draw()
