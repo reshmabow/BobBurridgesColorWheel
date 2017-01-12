@@ -112,7 +112,6 @@ class BobsColorWheel
     PVector location; 
     int base; 
 
-    // angle between base and focal color
     int focalAngle = 180; 
     int focal; 
 
