@@ -122,6 +122,9 @@ class BobsColorWheel
     int brightness = 70;
     int saturation = 80;
 
+    static final int COLOR_LABEL_ANGLE_FREQ = 45;
+    static final int GLOBAL_WHEEL_ROTATION = 180;
+    
     public BobsColorWheel(int x, int y)
     {
         setBase(0); 
@@ -204,13 +207,17 @@ class BobsColorWheel
         rectMode(CENTER);
         pushMatrix();
         translate(location.x, location.y); 
-        for (int i=0; i <= 360; i++) {
-            drawColorSegment(i);
-        }
+        drawColorWheel();
         drawFocalColorPaddle();
         drawSpice1ColorPaddle();
         drawSpice2ColorPaddle();
         popMatrix();
+    }
+    private void drawColorWheel()
+    {
+      for (int i=0; i <= 360; i++) {
+            drawColorSegment(i);
+        }   
     }
     private void drawColorSegment(int segment)
     {
@@ -218,7 +225,7 @@ class BobsColorWheel
         fill(fillColor); 
         stroke(fillColor); 
         pushMatrix(); 
-        rotate(radians(segment+180)); 
+        rotate(radians(segment+GLOBAL_WHEEL_ROTATION)); 
         rect(0, 25, 5, 25); 
         drawBaseColorPaddle(segment);
         drawColorValueText(segment);
@@ -234,16 +241,16 @@ class BobsColorWheel
 
     void drawFocalColorPaddle()
     {
-        drawPaddle(focal+180, getFocalColor(), 30);
+        drawPaddle(focal+GLOBAL_WHEEL_ROTATION, getFocalColor(), 30);
     }
 
     void drawSpice1ColorPaddle()
     {
-        drawPaddle(spice1+180, getSpice1Color(), 15);
+        drawPaddle(spice1+GLOBAL_WHEEL_ROTATION, getSpice1Color(), 15);
     }
     void drawSpice2ColorPaddle()
     {
-        drawPaddle(spice2+180, getSpice2Color(), 15);
+        drawPaddle(spice2+GLOBAL_WHEEL_ROTATION, getSpice2Color(), 15);
     }
 
     private void drawPaddle(int angle, color col, int paddleWidth)
@@ -257,7 +264,7 @@ class BobsColorWheel
     }
     void drawColorValueText(int segment)
     {
-        if (segment%45 == 0)
+        if (segment%COLOR_LABEL_ANGLE_FREQ == 0)
         { 
             fill(0);
             stroke(0);
