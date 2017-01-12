@@ -37,6 +37,7 @@ void keyPressed()
         {
             bob.incBase();
         }
+        bob.setDirty();
     }
 }
 void keyReleased()
@@ -155,6 +156,12 @@ class BobsColorWheel
     static final int GLOBAL_WHEEL_ROTATION = 180;
 
     ColorVariater baseColorVariater;
+    ColorVariater focalColorVariater;
+    ColorVariater spice1ColorVariater;
+    ColorVariater spice2ColorVariater;
+
+
+    boolean isDirty = true;
 
     public BobsColorWheel(int x, int y)
     {
@@ -165,6 +172,18 @@ class BobsColorWheel
         setSpice2(base - spiceAngle);
         movePaddlesFast = true;
         baseColorVariater = new ColorVariater(20, 0, 0, 0.002);
+        focalColorVariater = new ColorVariater(20, 0, 0, 0.002);
+        spice1ColorVariater = new ColorVariater(20, 0, 0, 0.002);
+        spice2ColorVariater = new ColorVariater(20, 0, 0, 0.002);
+    }
+    boolean isDirty() {
+        return isDirty;
+    }
+    void setDirty() {
+        isDirty = true;
+    }
+    void setNotDirty() {
+        isDirty = false;
     }
 
     void decBase()
@@ -205,6 +224,20 @@ class BobsColorWheel
     {
         return baseColorVariater.getRandomColorVariation(color(base, saturation, brightness, 1.0));
     }
+    color getFocalColorVariation()
+    {
+        return focalColorVariater.getRandomColorVariation(color(focal, saturation, brightness, 1.0));
+    }
+
+    color getSpice1ColorVariation()
+    {
+        return spice1ColorVariater.getRandomColorVariation(color(spice1, saturation, brightness, 1.0));
+    }
+    color getSpice2ColorVariation()
+    {
+        return spice2ColorVariater.getRandomColorVariation(color(spice2, saturation, brightness, 1.0));
+    }
+
     color getFocalColor()
     {
         return color(focal, saturation, brightness, 1.0);
@@ -387,8 +420,13 @@ class PaintingSketch
     PVector loc;
     int w;
     int h;
-    public static final int NUM_BASECOLOR_RECTS = 20;
+    public static final int NUM_BASECOLOR_RECTS = 70;
+    public static final int NUM_FOCALCOLOR_RECTS = 10;
+    public static final int NUM_SPICECOLOR_RECTS = 4;
     List<MyRect> baseColorRects;
+    List<MyRect> focalColorRects;
+    List<MyRect> spice1ColorRects;
+    List<MyRect> spice2ColorRects;
 
     public PaintingSketch(int x, int y, int _w, int _h)
     {
@@ -396,11 +434,24 @@ class PaintingSketch
         w = _w;
         h = _h;
         baseColorRects = new ArrayList<MyRect>();
-        createBaseColorRects();
+        focalColorRects = new ArrayList<MyRect>();
+        spice1ColorRects = new ArrayList<MyRect>();
+        spice2ColorRects = new ArrayList<MyRect>();
+    }
+    private void createColorRects()
+    {
+        if (bob.isDirty())
+        {
+            createBaseColorRects();
+            createFocalColorRects();
+            createSpice1ColorRects();
+            createSpice2ColorRects();
+            bob.setNotDirty();
+        }
     }
     private void createBaseColorRects()
     {
-        baseColorRects.add(new MyRect(0, 0, w, h, 120));
+        baseColorRects.add(new MyRect(0, 0, w, h, bob.getBaseColor()));
         for (int i=0; i < NUM_BASECOLOR_RECTS; i++)
         {
             int rx = int(random(w));
@@ -412,17 +463,93 @@ class PaintingSketch
             baseColorRects.add(mr);
         }
     }
+    private void createFocalColorRects()
+    {
+        for (int i=0; i < NUM_FOCALCOLOR_RECTS; i++)
+        {
+            int rx = int(random(w));
+            int ry = int(random(h));
+            int rw = int(random(w-rx));
+            int rh = int(random(h-ry));
+            int rc = bob.getFocalColorVariation();
+            MyRect mr = new MyRect(rx, ry, rw, rh, rc);
+            focalColorRects.add(mr);
+        }
+    }
+    private void createSpice1ColorRects()
+    {
+        for (int i=0; i < NUM_SPICECOLOR_RECTS/2; i++)
+        {
+            int rx = int(random(w));
+            int ry = int(random(h));
+            int rw = int(random(w-rx));
+            int rh = int(random(h-ry));
+            int rc = bob.getSpice1ColorVariation();
+            MyRect mr = new MyRect(rx, ry, rw, rh, rc);
+            spice1ColorRects.add(mr);
+        }
+    }
+
+    private void createSpice2ColorRects()
+    {
+        for (int i=0; i < NUM_SPICECOLOR_RECTS/2; i++)
+        {
+            int rx = int(random(w));
+            int ry = int(random(h));
+            int rw = int(random(w-rx));
+            int rh = int(random(h-ry));
+            int rc = bob.getSpice2ColorVariation();
+            MyRect mr = new MyRect(rx, ry, rw, rh, rc);
+            spice2ColorRects.add(mr);
+        }
+    }
+
     void draw()
     {
+        createColorRects();
         rectMode(CORNER);
         pushMatrix();
         translate(loc.x, loc.y);
         drawBaseColorRects();
+        drawFocalColorRects();
+        drawSpiceColorRects();
         popMatrix();
     }
     void drawBaseColorRects()
     {
         for (MyRect r : baseColorRects)
+        {
+            fill(r.col);
+            stroke(r.col);
+            rect(r.x, r.y, r.w, r.h);
+        }
+    }
+    void drawFocalColorRects()
+    {
+        for (MyRect r : focalColorRects)
+        {
+            fill(r.col);
+            stroke(r.col);
+            rect(r.x, r.y, r.w, r.h);
+        }
+    }
+    void drawSpiceColorRects()
+    {
+        drawSpice1ColorRects();
+        drawSpice2ColorRects();
+    }
+    void drawSpice1ColorRects()
+    {
+        for (MyRect r : spice1ColorRects)
+        {
+            fill(r.col);
+            stroke(r.col);
+            rect(r.x, r.y, r.w, r.h);
+        }
+    }
+    void drawSpice2ColorRects()
+    {
+        for (MyRect r : spice2ColorRects)
         {
             fill(r.col);
             stroke(r.col);
