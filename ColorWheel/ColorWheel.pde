@@ -1,16 +1,21 @@
+import java.util.*;
+
 BobsColorWheel bob;
 Thumbnail thumbnail;
+PaintingSketch paintingSketch;
 
 void setup() {
     size(700, 700);
     colorMode(HSB, 360, 100, 100, 1.0);
     bob = new BobsColorWheel(180, 180);
     thumbnail = new Thumbnail(350, 50, 300, 300);
+    paintingSketch = new PaintingSketch(0, 400, 600, 300);
 }
 void draw() {
     background(200);
     bob.draw();
     thumbnail.draw();
+    paintingSketch.draw();
 }
 
 
@@ -22,13 +27,13 @@ void keyPressed()
         logln(keyCode);
         if (keyCode == SHIFT)
         {
-            logln("Shift pressed");
             bob.movePaddlesSlow();
         }
         if (keyCode == LEFT)
         {
             bob.decBase();
-        } else if (keyCode == RIGHT)
+        } 
+        if (keyCode == RIGHT)
         {
             bob.incBase();
         }
@@ -41,7 +46,6 @@ void keyReleased()
         logln(keyCode);
         if (keyCode == SHIFT)
         {
-            logln("Shift released");
             bob.movePaddlesFast();
         }
     }
@@ -90,9 +94,11 @@ class Thumbnail
     void draw()
     {
         rectMode(CORNER);
+        pushMatrix();
         drawBaseColor();
         drawFocalColor();
         drawSpiceColors();
+        popMatrix();
     }
 
     private void drawBaseColor()
@@ -131,6 +137,7 @@ class BobsColorWheel
     boolean movePaddlesFast;
     int paddleSlowSpeed = 2;
     int paddleFastSpeed = 25;
+
     PVector location; 
     int base; 
 
@@ -144,8 +151,6 @@ class BobsColorWheel
     int brightness = 70;
     int saturation = 80;
 
-
-
     static final int COLOR_LABEL_ANGLE_FREQ = 45;
     static final int GLOBAL_WHEEL_ROTATION = 180;
 
@@ -156,7 +161,7 @@ class BobsColorWheel
         setFocal(base + focalAngle);
         setSpice1(base + spiceAngle);
         setSpice2(base - spiceAngle);
-        movePaddlesFast = false;
+        movePaddlesFast = true;
     }
 
     void decBase()
@@ -306,5 +311,57 @@ class BobsColorWheel
             textSize(16);
             text(segment, 0, 80);
         }
+    }
+}
+
+
+class PaintingSketch
+{
+    PVector loc;
+    int w;
+    int h;
+    public static final int NUM_BASECOLOR_RECTS = 20;
+    List<MyRect> baseColorRects;
+
+    public PaintingSketch(int x, int y, int _w, int _h)
+    {
+        loc = new PVector(x, y);
+        w=_w;
+        h=_h;
+        // debugging only
+        baseColorRects = new ArrayList<MyRect>();
+        baseColorRects.add(new MyRect(0, 0, 200, 200, color(0, 90, 60, 1.0)));
+    }
+
+    void draw()
+    {
+        rectMode(CORNER);
+        pushMatrix();
+        translate(loc.x, loc.y);
+        drawBaseColorRects();
+        popMatrix();
+    }
+    void drawBaseColorRects()
+    {
+        for (MyRect r : baseColorRects)
+        {
+            fill(r.col);
+            stroke(r.col);
+            rect(r.x, r.y, r.w, r.h);
+        }
+    }
+}
+
+class MyRect
+{
+    int x, y, w, h;
+    color col;
+    public MyRect(int _x, int _y, int _w, int _h, int _col)
+    {
+        x=_x;
+        y=_y;
+        w=_w;
+        h=_h;
+        col=_col;
     }
 }
