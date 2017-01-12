@@ -19,14 +19,10 @@ void keyPressed()
 {
     if (key == ',')
     {
-        logl("BEFORE " + bob.toString());
         bob.decBase();
-        logln("AFTER " + bob.toString());
     } else if (key == '.')
     {
-        logl("BEFORE " + bob.toString());
         bob.incBase();
-        logln("AFTER " + bob.toString());
     }
 }
 
@@ -112,6 +108,7 @@ class Thumbnail
 
 class BobsColorWheel
 {
+    int paddleSpeed = 5;
     PVector location; 
     int base; 
 
@@ -137,16 +134,11 @@ class BobsColorWheel
 
     void decBase()
     {
-        int newBase = (base-10); 
-        if (newBase < 0)
-        {
-            setBase(360);
-        } else {
-            setBase(newBase);
-        }
+        int newBase = (base-paddleSpeed)%360; 
+        setBase(newBase);
     }
     void incBase() {
-        int newBase = (base+10)%360; 
+        int newBase = (base+paddleSpeed)%360; 
         setBase(newBase);
     }
     String toString()
