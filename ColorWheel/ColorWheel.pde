@@ -19,6 +19,12 @@ void keyPressed()
 {
     if (key == CODED)
     {
+        logln(keyCode);
+        if (keyCode == SHIFT)
+        {
+            logln("Shift pressed");
+            bob.movePaddlesSlow();
+        }
         if (keyCode == LEFT)
         {
             bob.decBase();
@@ -28,7 +34,18 @@ void keyPressed()
         }
     }
 }
-
+void keyReleased()
+{
+    if (key == CODED)
+    {
+        logln(keyCode);
+        if (keyCode == SHIFT)
+        {
+            logln("Shift released");
+            bob.movePaddlesFast();
+        }
+    }
+}
 void logln(int msg)
 {
     System.out.println(msg);
@@ -111,7 +128,9 @@ class Thumbnail
 
 class BobsColorWheel
 {
-    int paddleSpeed = 5;
+    boolean movePaddlesFast;
+    int paddleSlowSpeed = 2;
+    int paddleFastSpeed = 25;
     PVector location; 
     int base; 
 
@@ -125,6 +144,8 @@ class BobsColorWheel
     int brightness = 70;
     int saturation = 80;
 
+
+
     static final int COLOR_LABEL_ANGLE_FREQ = 45;
     static final int GLOBAL_WHEEL_ROTATION = 180;
 
@@ -135,10 +156,12 @@ class BobsColorWheel
         setFocal(base + focalAngle);
         setSpice1(base + spiceAngle);
         setSpice2(base - spiceAngle);
+        movePaddlesFast = false;
     }
 
     void decBase()
     {
+        int paddleSpeed = (movePaddlesFast) ? paddleFastSpeed: paddleSlowSpeed;
         int newBase = (base-paddleSpeed)%360; 
         if (newBase < 0)
         {
@@ -147,9 +170,18 @@ class BobsColorWheel
         setBase(newBase);
     }
     void incBase() {
+        int paddleSpeed = (movePaddlesFast) ? paddleFastSpeed: paddleSlowSpeed;
         int newBase = (base+paddleSpeed)%360; 
         setBase(newBase);
     }
+    void movePaddlesFast() {
+        movePaddlesFast = true;
+    }
+    void movePaddlesSlow() {
+        movePaddlesFast = false;
+    }
+
+
     String toString()
     {
         return "(" + base + "," + focal + "," + spice1 + "," + spice2 + ")";
