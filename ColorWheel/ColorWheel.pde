@@ -464,19 +464,11 @@ class PaintingSketch
     {
         int focalMaxWidth = 80;
         int focalMaxHeight = 80;
+        int focalCenterX = 2*w/3;
+        int focalCenterY = h/3;
 
-        //for (int i=0; i < NUM_FOCALCOLOR_RECTS; i++)
-        //{
-        //    int rx = int(random(w));
-        //    int ry = int(random(h));
-        //    int rw = int(random(min(w-rx, focalMaxWidth)));
-        //    int rh = int(random(min(h-ry, focalMaxHeight)));
-        //    int rc = bob.getFocalColorVariation();
-        //    MyRect mr = new MyRect(rx, ry, rw, rh, rc);
-        //    focalColorRects.add(mr);
-        //}
         focalColorRects.addAll(
-            createColorRectsHelper(NUM_FOCALCOLOR_RECTS, focalMaxWidth, focalMaxHeight, bob.getFocalColorVariation())
+            createClusteredColorRectsHelper(NUM_FOCALCOLOR_RECTS, focalCenterX, focalCenterY, focalMaxWidth, focalMaxHeight, bob.getFocalColorVariation())
             );
     }
     private void createSpice1ColorRects()
@@ -508,6 +500,26 @@ class PaintingSketch
         {
             int rx = int(random(w));
             int ry = int(random(h));
+            int rw = int(random(min(w-rx, maxWidth)));
+            int rh = int(random(min(h-ry, maxHeight)));
+            MyRect mr = new MyRect(rx, ry, rw, rh, c);
+            createdRects.add(mr);
+        }
+        return createdRects;
+    }
+
+    private  List<MyRect> createClusteredColorRectsHelper(
+        int numRects, 
+        int centerX, 
+        int centerY, 
+        int maxWidth, int maxHeight, 
+        color c)
+    {
+        List<MyRect> createdRects = new ArrayList<MyRect>();
+        for (int i=0; i < numRects; i++)
+        {
+            int rx = centerX + int(random(-10,10));
+            int ry = centerY + int(random(-10,10));
             int rw = int(random(min(w-rx, maxWidth)));
             int rh = int(random(min(h-ry, maxHeight)));
             MyRect mr = new MyRect(rx, ry, rw, rh, c);
