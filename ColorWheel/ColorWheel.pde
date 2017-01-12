@@ -134,6 +134,10 @@ class BobsColorWheel
     void decBase()
     {
         int newBase = (base-paddleSpeed)%360; 
+        if (newBase < 0)
+        {
+            newBase += 360;
+        }
         setBase(newBase);
     }
     void incBase() {
