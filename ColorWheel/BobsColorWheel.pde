@@ -18,9 +18,20 @@ interface BobsColorWheel
     color getSpice1ColorVariation();
     color getSpice2Color();
     color getSpice2ColorVariation();
+    color getColorFromAngle(int angle);
 }
 
 
+/**
+ * This version uses Processing's native colors on the wheel.
+ * This means that, for instance, a color value of 0 would map to red.
+ * whilst this works, Bob Burridge uses a specific set of 10 colors for his wheel
+ * and processing's native colors uses many more.
+ *
+ * If you are interested in a color wheel that is much closer to Bob Burridges wheel, then
+ * please consider using BobsColorWheelv2
+ *
+ */
 class BobsColorWheelv1 implements BobsColorWheel
 {
     boolean movePaddlesFast;
@@ -37,8 +48,8 @@ class BobsColorWheelv1 implements BobsColorWheel
     int spice1; 
     int spice2; 
 
-    int brightness = 70;
-    int saturation = 80;
+    int brightness = 00;//70
+    int saturation = 00;//80
 
     ColorVariater baseColorVariater;
     ColorVariater focalColorVariater;
@@ -180,18 +191,22 @@ class BobsColorWheelv1 implements BobsColorWheel
     }
     private void drawColorWheel()
     {
-        for (int i=0; i <= 360; i++) {
+        for (int i=0; i < 360; i++) {
             drawColorSegment(i);
         }
     }
+    color getColorFromAngle(int angle)
+    {
+        return color(angle, 100, 60, 1.0);
+    }
     private void drawColorSegment(int segment)
     {
-        color fillColor = color(segment, 100, 60, 1.0); 
+        color fillColor = getColorFromAngle(segment); // TODO bow this needs to call a method to do a color lookup
         fill(fillColor); 
         stroke(fillColor); 
         pushMatrix(); 
         rotate(radians(segment+Params.GLOBAL_WHEEL_ROTATION)); 
-        rect(0, 25, 5, 25); 
+        rect(0, 25, 5, 55); 
         drawBaseColorPaddle(segment);
         drawColorValueText(segment);
         popMatrix();
@@ -239,6 +254,13 @@ class BobsColorWheelv1 implements BobsColorWheel
     }
 }
 
+
+
+
+
+
+
+
 /**
  * This version of the color wheel uses a specific set of 10 colors
  * distributed around the color wheel.
@@ -262,16 +284,16 @@ class BobsColorWheelv2 extends BobsColorWheelv1
     {
         colorSlots = new ArrayList<Integer>();
         colorLookup = new int[360];
-        color color1 = color(0, 100, 100, 1.0);
-        color color2 = color(30, 90, 90, 1.0);
-        color color3 = color(60, 80, 80, 1.0);
-        color color4 = color(90, 70, 70, 1.0);
-        color color5 = color(120, 60, 60, 1.0);
-        color color6 = color(150, 50, 50, 1.0);
-        color color7 = color(180, 40, 40, 1.0);
-        color color8 = color(220, 30, 30, 1.0);
-        color color9 = color(250, 20, 20, 1.0);
-        color color10 = color(280, 10, 10, 1.0);
+        color color1 = color(0, 89, 82, 1.0);// 235 25 25
+        color color2 = color(38, 92, 84, 1.0);// 240 160 19
+        color color3 = color(59, 78, 82, 1.0);// 236 232 50
+        color color4 = color(134, 84, 62, 1.0);// 58 160 77
+        color color5 = color(153, 88, 42, 1.0);//  12 108 64
+        color color6 = color(206, 93, 55, 1.0);// 10 85 142
+        color color7 = color(217, 90, 61, 1.0);// 15 69 156
+        color color8 = color(231, 77, 45, 1.0);// 26 40 115
+        color color9 = color(236, 83, 30, 1.0);// 13 17 78
+        color color10 = color(354, 90, 84, 1.0);// 215 20 40
 
         addColorsToSlots(
             color1, 
@@ -315,6 +337,10 @@ class BobsColorWheelv2 extends BobsColorWheelv1
         }
     }
 
+    @Override color getColorFromAngle(int angle)
+    {
+        return lookupColor(angle);
+    }
     @Override color getBaseColor()
     {
         logln("looking up with BASE index " + base);
@@ -359,27 +385,3 @@ class BobsColorWheelv2 extends BobsColorWheelv1
         return colorSlots.get(colorLookup[index]);
     }
 }
-
-
-
-
-//---------------------------------------------------------------------------------------------------
-
-/**
- * This version uses Processing's native colors on the wheel.
- * This means that, for instance, a color value of 0 would map to red.
- * whilst this works, Bob Burridge uses a specific set of 10 colors for his wheel
- * and processing's native colors uses many more.
- *
- * If you are interested in a color wheel that is much closer to Bob Burridges wheel, then
- * please consider using BobsColorWheelv2
- *
- */
-//class BobsColorWheelv1 extends BobsColorWheelBase
-//{
-
-//    public BobsColorWheelv1(int x, int y)
-//    {
-//        super(x, y);
-//    }
-//}
