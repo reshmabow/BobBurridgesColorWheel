@@ -206,7 +206,7 @@ class BobsColorWheelv1 implements BobsColorWheel
         stroke(fillColor); 
         pushMatrix(); 
         rotate(radians(segment+Params.GLOBAL_WHEEL_ROTATION)); 
-        rect(0, 25, 5, 55); 
+        rect(0, 25, 5, 40); 
         drawBaseColorPaddle(segment);
         drawColorValueText(segment);
         popMatrix();
@@ -284,28 +284,30 @@ class BobsColorWheelv2 extends BobsColorWheelv1
     {
         colorSlots = new ArrayList<Integer>();
         colorLookup = new int[360];
-        color color1 = color(0, 89, 82, 1.0);// 235 25 25
-        color color2 = color(38, 92, 84, 1.0);// 240 160 19
-        color color3 = color(59, 78, 82, 1.0);// 236 232 50
-        color color4 = color(134, 84, 62, 1.0);// 58 160 77
-        color color5 = color(153, 88, 42, 1.0);//  12 108 64
-        color color6 = color(206, 93, 55, 1.0);// 10 85 142
-        color color7 = color(217, 90, 61, 1.0);// 15 69 156
-        color color8 = color(231, 77, 45, 1.0);// 26 40 115
-        color color9 = color(236, 83, 30, 1.0);// 13 17 78
-        color color10 = color(354, 90, 84, 1.0);// 215 20 40
+
+
+        color red = color(0, 89, 82, 1.0);// 235 25 25
+        color orange = color(38, 92, 84, 1.0);// 240 160 19
+        color yellow = color(59, 78, 82, 1.0);// 236 232 50
+        color lightGreen = color(134, 84, 62, 1.0);// 58 160 77
+        color green = color(153, 88, 42, 1.0);//  12 108 64
+        color blueGreen = color(206, 93, 55, 1.0);// 10 85 142
+        color skyBlue = color(217, 90, 61, 1.0);// 15 69 156
+        color darkBlue = color(231, 77, 45, 1.0);// 26 40 115
+        color lightPurple = color(326, 100, 73, 1.0);// 212 0 119? light purple
+        color darkPurple = color(237, 85, 33, 1.0);// 215 20 40
 
         addColorsToSlots(
-            color1, 
-            color2, 
-            color3, 
-            color4, 
-            color5, 
-            color6, 
-            color7, 
-            color8, 
-            color9, 
-            color10);
+            red, 
+            orange, 
+            yellow, 
+            lightGreen, 
+            green, 
+            blueGreen, 
+            skyBlue, 
+            darkBlue, 
+            darkPurple, 
+            lightPurple);
     }
     private void addColorsToSlots(color ... col)
     {
@@ -343,22 +345,18 @@ class BobsColorWheelv2 extends BobsColorWheelv1
     }
     @Override color getBaseColor()
     {
-        logln("looking up with BASE index " + base);
         return  lookupColor(base);
     }
     @Override color getFocalColor()
     {
-        logln("looking up with FOCAL index " + focal);
         return  lookupColor(focal);
     }
     @Override color getSpice1Color()
     {
-        logln("looking up with SPICE1 index " + spice1);
         return  lookupColor(spice1);
     }
     @Override color getSpice2Color()
     {
-        logln("looking up with SPICE2 index " + spice2);
         return  lookupColor(spice2);
     }
 

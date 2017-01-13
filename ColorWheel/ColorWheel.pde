@@ -19,11 +19,11 @@ void draw() {
 }
 class Params
 {
-    static final int COLOR_LABEL_ANGLE_FREQ = 45;
+    static final int COLOR_LABEL_ANGLE_FREQ = 36;
     static final int GLOBAL_WHEEL_ROTATION = 180;
 
     public static final int FOCAL_ANGLE = 180;
-    public static final int SPICE_ANGLE = 115;
+    public static final int SPICE_ANGLE = 90;
 
     public static final int NUM_BASECOLOR_RECTS = 70;
     public static final int NUM_FOCALCOLOR_RECTS = 100;
@@ -181,6 +181,7 @@ class ColorVariater
         a =  bowlimit(a, 0.0, 0.5);
         return color(hue(raw), saturation(raw), brightness(raw), a);
     }
+    // TODO can use constrain(raw, lo,hi) instead??
     int bowlimit(int raw, int low, int hi)
     {
         if (raw < low)
@@ -206,6 +207,9 @@ class ColorVariater
         return raw;
     }
 }
+
+
+
 
 
 class PaintingSketch
@@ -294,24 +298,6 @@ class PaintingSketch
             createClusteredColorRectsHelper(Params.NUM_SPICECOLOR_RECTS/2, focalCenterX, focalCenterY, spiceMaxWidth, spiceMaxHeight, bob.getSpice2ColorVariation())
             );
     }
-    private  List<MyRect> createColorRectsHelper(
-        int numRects, 
-        int maxWidth, int maxHeight, 
-        color c)
-    {
-        List<MyRect> createdRects = new ArrayList<MyRect>();
-        for (int i=0; i < numRects; i++)
-        {
-            int rx = int(random(w));
-            int ry = int(random(h));
-            int rw = int(random(min(w-rx, maxWidth)));
-            int rh = int(random(min(h-ry, maxHeight)));
-            MyRect mr = new MyRect(rx, ry, rw, rh, c);
-            createdRects.add(mr);
-        }
-        return createdRects;
-    }
-
 
     private void createSecondaryFocalColorLines()
     {
