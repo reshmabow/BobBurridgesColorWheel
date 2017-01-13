@@ -18,6 +18,15 @@ void draw() {
     paintingSketch.draw();
 }
 
+class Params
+{
+    static final int COLOR_LABEL_ANGLE_FREQ = 45;
+    static final int GLOBAL_WHEEL_ROTATION = 180;
+
+    public static final int NUM_BASECOLOR_RECTS = 70;
+    public static final int NUM_FOCALCOLOR_RECTS = 100;
+    public static final int NUM_SPICECOLOR_RECTS = 150;
+}
 
 
 void keyPressed()
@@ -152,8 +161,8 @@ class BobsColorWheel
     int brightness = 70;
     int saturation = 80;
 
-    static final int COLOR_LABEL_ANGLE_FREQ = 45;
-    static final int GLOBAL_WHEEL_ROTATION = 180;
+    //static final int COLOR_LABEL_ANGLE_FREQ = 45;
+    //static final int GLOBAL_WHEEL_ROTATION = 180;
 
     ColorVariater baseColorVariater;
     ColorVariater focalColorVariater;
@@ -172,9 +181,9 @@ class BobsColorWheel
         setSpice2(base - spiceAngle);
         movePaddlesFast = true;
         baseColorVariater = new ColorVariater(20, 10, 30, 0.002);
-        focalColorVariater = new ColorVariater(10, 10, 30, 1);
-        spice1ColorVariater = new ColorVariater(10, 10, 5, 0);
-        spice2ColorVariater = new ColorVariater(10, 10, 5, 0);
+        focalColorVariater = new ColorVariater(10, 10, 30, 0.002);
+        spice1ColorVariater = new ColorVariater(10, 10, 5, 0.002);
+        spice2ColorVariater = new ColorVariater(10, 10, 5, 0.002);
     }
     boolean isDirty() {
         return isDirty;
@@ -305,7 +314,7 @@ class BobsColorWheel
         fill(fillColor); 
         stroke(fillColor); 
         pushMatrix(); 
-        rotate(radians(segment+GLOBAL_WHEEL_ROTATION)); 
+        rotate(radians(segment+Params.GLOBAL_WHEEL_ROTATION)); 
         rect(0, 25, 5, 25); 
         drawBaseColorPaddle(segment);
         drawColorValueText(segment);
@@ -321,16 +330,16 @@ class BobsColorWheel
 
     void drawFocalColorPaddle()
     {
-        drawPaddle(focal+GLOBAL_WHEEL_ROTATION, getFocalColor(), 30);
+        drawPaddle(focal+Params.GLOBAL_WHEEL_ROTATION, getFocalColor(), 30);
     }
 
     void drawSpice1ColorPaddle()
     {
-        drawPaddle(spice1+GLOBAL_WHEEL_ROTATION, getSpice1Color(), 15);
+        drawPaddle(spice1+Params.GLOBAL_WHEEL_ROTATION, getSpice1Color(), 15);
     }
     void drawSpice2ColorPaddle()
     {
-        drawPaddle(spice2+GLOBAL_WHEEL_ROTATION, getSpice2Color(), 15);
+        drawPaddle(spice2+Params.GLOBAL_WHEEL_ROTATION, getSpice2Color(), 15);
     }
 
     private void drawPaddle(int angle, color col, int paddleWidth)
@@ -344,7 +353,7 @@ class BobsColorWheel
     }
     void drawColorValueText(int segment)
     {
-        if (segment%COLOR_LABEL_ANGLE_FREQ == 0)
+        if (segment%Params.COLOR_LABEL_ANGLE_FREQ == 0)
         { 
             fill(0);
             stroke(0);
@@ -381,7 +390,7 @@ class ColorVariater
 
 
         float alpha = alpha(pureColor) + random(0, alphaVariation);
-        alpha = bowlimit(alpha, 0.0, 0.7);//0.0, 0.5
+        alpha = bowlimit(alpha, 0.0, 0.05);//0.0, 0.5
 
         color colorVariation = color(hue, saturation, brightness, alpha);
         return colorVariation;
@@ -411,15 +420,14 @@ class ColorVariater
         return raw;
     }
 }
-
 class PaintingSketch
 {
     PVector loc;
     int w;
     int h;
-    public static final int NUM_BASECOLOR_RECTS = 70;
-    public static final int NUM_FOCALCOLOR_RECTS = 10;
-    public static final int NUM_SPICECOLOR_RECTS = 100;
+    //public static final int NUM_BASECOLOR_RECTS = 70;
+    //public static final int NUM_FOCALCOLOR_RECTS = 10;
+    //public static final int NUM_SPICECOLOR_RECTS = 50;
     List<MyRect> baseColorRects;
     List<MyRect> focalColorRects;
     List<MyRect> spice1ColorRects;
@@ -450,7 +458,7 @@ class PaintingSketch
     {
         baseColorRects.clear();
         baseColorRects.add(new MyRect(0, 0, w, h, bob.getBaseColor()));
-        for (int i=0; i < NUM_BASECOLOR_RECTS; i++)
+        for (int i=0; i < Params.NUM_BASECOLOR_RECTS; i++)
         {
             int rx = int(random(w));
             int ry = int(random(h));
@@ -470,7 +478,7 @@ class PaintingSketch
 
         focalColorRects.clear();
         focalColorRects.addAll(
-            createClusteredColorRectsHelper(NUM_FOCALCOLOR_RECTS, focalCenterX, focalCenterY, focalMaxWidth, focalMaxHeight, bob.getFocalColorVariation())
+            createClusteredColorRectsHelper(Params.NUM_FOCALCOLOR_RECTS, focalCenterX, focalCenterY, focalMaxWidth, focalMaxHeight, bob.getFocalColorVariation())
             );
     }
     private void createSpice1ColorRects()
@@ -482,7 +490,7 @@ class PaintingSketch
         int spiceMaxHeight = 20;
         spice1ColorRects.clear();
         spice1ColorRects.addAll(
-            createClusteredColorRectsHelper(NUM_SPICECOLOR_RECTS/2, focalCenterX, focalCenterY, spiceMaxWidth, spiceMaxHeight, bob.getSpice1ColorVariation())
+            createClusteredColorRectsHelper(Params.NUM_SPICECOLOR_RECTS/2, focalCenterX, focalCenterY, spiceMaxWidth, spiceMaxHeight, bob.getSpice1ColorVariation())
             );
     }
 
@@ -495,7 +503,7 @@ class PaintingSketch
         int spiceMaxHeight = 20;
         spice2ColorRects.clear();
         spice2ColorRects.addAll(
-            createClusteredColorRectsHelper(NUM_SPICECOLOR_RECTS/2, focalCenterX, focalCenterY, spiceMaxWidth, spiceMaxHeight, bob.getSpice2ColorVariation())
+            createClusteredColorRectsHelper(Params.NUM_SPICECOLOR_RECTS/2, focalCenterX, focalCenterY, spiceMaxWidth, spiceMaxHeight, bob.getSpice2ColorVariation())
             );
     }
     private  List<MyRect> createColorRectsHelper(
