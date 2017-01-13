@@ -7,7 +7,7 @@ PaintingSketch paintingSketch;
 void setup() {
     size(700, 700);
     colorMode(HSB, 360, 100, 100, 1.0);
-    bob = new BobsColorWheelv1(180, 180);
+    bob = new BobsColorWheelv2(180, 180);
     thumbnail = new Thumbnail(350, 50, 300, 300);
     paintingSketch = new PaintingSketch(10, 400, 680, 280);
 }

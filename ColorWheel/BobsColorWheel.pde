@@ -21,7 +21,6 @@ interface BobsColorWheel
 }
 
 
-
 class BobsColorWheelv1 implements BobsColorWheel
 {
     boolean movePaddlesFast;
@@ -46,8 +45,8 @@ class BobsColorWheelv1 implements BobsColorWheel
     ColorVariater spice1ColorVariater;
     ColorVariater spice2ColorVariater;
 
-
     boolean isDirty = true;
+
 
     public BobsColorWheelv1(int x, int y)
     {
@@ -239,3 +238,148 @@ class BobsColorWheelv1 implements BobsColorWheel
         }
     }
 }
+
+/**
+ * This version of the color wheel uses a specific set of 10 colors
+ * distributed around the color wheel.
+ * The resulting schemes should match more closely the "real" color wheel.
+ *
+ * Also note: this version can be extended to put any 10 colors around the wheel
+ * allowing us to experiment with other color combinations.
+ */
+class BobsColorWheelv2 extends BobsColorWheelv1
+{
+    List<Integer> colorSlots;
+    int[] colorLookup;
+
+    public BobsColorWheelv2(int x, int y)
+    {
+        super(x, y);
+        createColorWheel();
+    }
+
+    void createColorWheel()
+    {
+        colorSlots = new ArrayList<Integer>();
+        colorLookup = new int[360];
+        color color1 = color(0, 100, 100, 1.0);
+        color color2 = color(30, 90, 90, 1.0);
+        color color3 = color(60, 80, 80, 1.0);
+        color color4 = color(90, 70, 70, 1.0);
+        color color5 = color(120, 60, 60, 1.0);
+        color color6 = color(150, 50, 50, 1.0);
+        color color7 = color(180, 40, 40, 1.0);
+        color color8 = color(220, 30, 30, 1.0);
+        color color9 = color(250, 20, 20, 1.0);
+        color color10 = color(280, 10, 10, 1.0);
+
+        addColorsToSlots(
+            color1, 
+            color2, 
+            color3, 
+            color4, 
+            color5, 
+            color6, 
+            color7, 
+            color8, 
+            color9, 
+            color10);
+    }
+    private void addColorsToSlots(color ... col)
+    {
+        int numColors = howManyColors(col);
+        int angleSizePerColor = 360/numColors;
+        int angle = 0;
+        for (color c : col)
+        {
+            addColorToSlot(angle, angle+angleSizePerColor, c); 
+            angle += angleSizePerColor;
+        }
+    }
+    private int howManyColors(color ... col)
+    {
+        int numColors = 0;
+        for (color c : col)
+        {
+            numColors++;
+        }
+        return numColors;
+    }
+    private void  addColorToSlot(int startAngle, int endAngle, color c)
+    {
+        colorSlots.add(c);
+        int colorIndex = colorSlots.size()-1;
+        for (int i=startAngle; i < endAngle; i++)
+        {
+            colorLookup[i] = colorIndex;
+        }
+    }
+
+    @Override color getBaseColor()
+    {
+        logln("looking up with BASE index " + base);
+        return  lookupColor(base);
+    }
+    @Override color getFocalColor()
+    {
+        logln("looking up with FOCAL index " + focal);
+        return  lookupColor(focal);
+    }
+    @Override color getSpice1Color()
+    {
+        logln("looking up with SPICE1 index " + spice1);
+        return  lookupColor(spice1);
+    }
+    @Override color getSpice2Color()
+    {
+        logln("looking up with SPICE2 index " + spice2);
+        return  lookupColor(spice2);
+    }
+
+    @Override color getBaseColorVariation()
+    {
+        return baseColorVariater.getRandomColorVariation(getBaseColor());
+    }
+    @Override color getFocalColorVariation()
+    {
+        return focalColorVariater.getRandomColorVariation(getFocalColor());
+    }
+
+    @Override color getSpice1ColorVariation()
+    {
+        return spice1ColorVariater.getRandomColorVariation(getSpice1Color());
+    }
+    @Override color getSpice2ColorVariation()
+    {
+        return spice2ColorVariater.getRandomColorVariation(getSpice2Color());
+    }
+
+    private color lookupColor(int index)
+    {
+        return colorSlots.get(colorLookup[index]);
+    }
+}
+
+
+
+
+//---------------------------------------------------------------------------------------------------
+
+/**
+ * This version uses Processing's native colors on the wheel.
+ * This means that, for instance, a color value of 0 would map to red.
+ * whilst this works, Bob Burridge uses a specific set of 10 colors for his wheel
+ * and processing's native colors uses many more.
+ *
+ * If you are interested in a color wheel that is much closer to Bob Burridges wheel, then
+ * please consider using BobsColorWheelv2
+ *
+ */
+//class BobsColorWheelv1 extends BobsColorWheelBase
+//{
+
+//    public BobsColorWheelv1(int x, int y)
+//    {
+//        super(x, y);
+//    }
+//}
