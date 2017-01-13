@@ -23,9 +23,12 @@ class Params
     static final int COLOR_LABEL_ANGLE_FREQ = 45;
     static final int GLOBAL_WHEEL_ROTATION = 180;
 
+    public static final int FOCAL_ANGLE = 180;
+    public static final int SPICE_ANGLE = 115;
+
     public static final int NUM_BASECOLOR_RECTS = 70;
     public static final int NUM_FOCALCOLOR_RECTS = 100;
-    public static final int NUM_SPICECOLOR_RECTS = 150;
+    public static final int NUM_SPICECOLOR_RECTS = 250;
 }
 
 
@@ -151,18 +154,15 @@ class BobsColorWheel
     PVector location; 
     int base; 
 
-    int focalAngle = 180; 
+    int focalAngle = Params.FOCAL_ANGLE; 
     int focal; 
 
-    int spiceAngle = 115; 
+    int spiceAngle = Params.SPICE_ANGLE;
     int spice1; 
     int spice2; 
 
     int brightness = 70;
     int saturation = 80;
-
-    //static final int COLOR_LABEL_ANGLE_FREQ = 45;
-    //static final int GLOBAL_WHEEL_ROTATION = 180;
 
     ColorVariater baseColorVariater;
     ColorVariater focalColorVariater;
@@ -180,10 +180,10 @@ class BobsColorWheel
         setSpice1(base + spiceAngle);
         setSpice2(base - spiceAngle);
         movePaddlesFast = true;
-        baseColorVariater = new ColorVariater(20, 10, 30, 0.002);
+        baseColorVariater = new ColorVariater(20, 90, 9, 0.002);
         focalColorVariater = new ColorVariater(10, 10, 30, 0.002);
-        spice1ColorVariater = new ColorVariater(10, 10, 5, 0.002);
-        spice2ColorVariater = new ColorVariater(10, 10, 5, 0.002);
+        spice1ColorVariater = new ColorVariater(10, 10, 5, 0.2);
+        spice2ColorVariater = new ColorVariater(10, 10, 5, 0.2);
     }
     boolean isDirty() {
         return isDirty;
@@ -425,9 +425,6 @@ class PaintingSketch
     PVector loc;
     int w;
     int h;
-    //public static final int NUM_BASECOLOR_RECTS = 70;
-    //public static final int NUM_FOCALCOLOR_RECTS = 10;
-    //public static final int NUM_SPICECOLOR_RECTS = 50;
     List<MyRect> baseColorRects;
     List<MyRect> focalColorRects;
     List<MyRect> spice1ColorRects;
