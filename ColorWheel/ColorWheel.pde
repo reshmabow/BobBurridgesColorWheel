@@ -171,10 +171,10 @@ class BobsColorWheel
         setSpice1(base + spiceAngle);
         setSpice2(base - spiceAngle);
         movePaddlesFast = true;
-        baseColorVariater = new ColorVariater(20, 10, 10, 0.002);
-        focalColorVariater = new ColorVariater(20, 10, 10, 0.002);
-        spice1ColorVariater = new ColorVariater(20, 10, 10, 0.002);
-        spice2ColorVariater = new ColorVariater(20, 10, 10, 0.002);
+        baseColorVariater = new ColorVariater(20, 10, 30, 0.002);
+        focalColorVariater = new ColorVariater(10, 10, 30, 1);
+        spice1ColorVariater = new ColorVariater(10, 10, 5, 0);
+        spice2ColorVariater = new ColorVariater(10, 10, 5, 0);
     }
     boolean isDirty() {
         return isDirty;
@@ -368,20 +368,20 @@ class ColorVariater
         saturationVariation = _saturationVariation;
         alphaVariation = _alphaVariation;
     }
-    color getRandomColorVariation(color baseColor)
+    color getRandomColorVariation(color pureColor)
     {
-        int hue = int(hue(baseColor) + random(0, hueVariation));
+        int hue = int(hue(pureColor) + random(0, hueVariation));
         hue = bowlimit(hue, 0, 360);
 
-        int brightness = int(brightness(baseColor) + random(0, brightnessVariation));
+        int brightness = int(brightness(pureColor) + random(0, brightnessVariation));
         brightness = bowlimit(brightness, 0, 100);
 
-        int saturation = int(saturation(baseColor) + random(0, saturationVariation));
+        int saturation = int(saturation(pureColor) + random(0, saturationVariation));
         saturation = bowlimit(saturation, 0, 100);
 
 
-        float alpha = alpha(baseColor) + random(0, alphaVariation);
-        alpha = bowlimit(alpha, 0.0, 0.5);
+        float alpha = alpha(pureColor) + random(0, alphaVariation);
+        alpha = bowlimit(alpha, 0.0, 0.7);//0.0, 0.5
 
         color colorVariation = color(hue, saturation, brightness, alpha);
         return colorVariation;
@@ -419,7 +419,7 @@ class PaintingSketch
     int h;
     public static final int NUM_BASECOLOR_RECTS = 70;
     public static final int NUM_FOCALCOLOR_RECTS = 10;
-    public static final int NUM_SPICECOLOR_RECTS = 4;
+    public static final int NUM_SPICECOLOR_RECTS = 100;
     List<MyRect> baseColorRects;
     List<MyRect> focalColorRects;
     List<MyRect> spice1ColorRects;
@@ -448,6 +448,7 @@ class PaintingSketch
     }
     private void createBaseColorRects()
     {
+        baseColorRects.clear();
         baseColorRects.add(new MyRect(0, 0, w, h, bob.getBaseColor()));
         for (int i=0; i < NUM_BASECOLOR_RECTS; i++)
         {
@@ -467,27 +468,34 @@ class PaintingSketch
         int focalCenterX = 2*w/3;
         int focalCenterY = h/3;
 
+        focalColorRects.clear();
         focalColorRects.addAll(
             createClusteredColorRectsHelper(NUM_FOCALCOLOR_RECTS, focalCenterX, focalCenterY, focalMaxWidth, focalMaxHeight, bob.getFocalColorVariation())
             );
     }
     private void createSpice1ColorRects()
     {
+        int focalCenterX = (2*w/3)-30;
+        int focalCenterY = h/3;
+
         int spiceMaxWidth = 20;
         int spiceMaxHeight = 20;
-
+        spice1ColorRects.clear();
         spice1ColorRects.addAll(
-            createColorRectsHelper(NUM_SPICECOLOR_RECTS/2, spiceMaxWidth, spiceMaxHeight, bob.getSpice1ColorVariation())
+            createClusteredColorRectsHelper(NUM_SPICECOLOR_RECTS/2, focalCenterX, focalCenterY, spiceMaxWidth, spiceMaxHeight, bob.getSpice1ColorVariation())
             );
     }
 
     private void createSpice2ColorRects()
     {
+        int focalCenterX = (2*w/3)+50;
+        int focalCenterY = h/3;
+
         int spiceMaxWidth = 20;
         int spiceMaxHeight = 20;
-
+        spice2ColorRects.clear();
         spice2ColorRects.addAll(
-            createColorRectsHelper(NUM_SPICECOLOR_RECTS/2, spiceMaxWidth, spiceMaxHeight, bob.getSpice2ColorVariation())
+            createClusteredColorRectsHelper(NUM_SPICECOLOR_RECTS/2, focalCenterX, focalCenterY, spiceMaxWidth, spiceMaxHeight, bob.getSpice2ColorVariation())
             );
     }
     private  List<MyRect> createColorRectsHelper(
@@ -518,8 +526,8 @@ class PaintingSketch
         List<MyRect> createdRects = new ArrayList<MyRect>();
         for (int i=0; i < numRects; i++)
         {
-            int rx = centerX + int(random(-10,10));
-            int ry = centerY + int(random(-10,10));
+            int rx = centerX + int(random(-20, 20));
+            int ry = centerY + int(random(-40, 40));
             int rw = int(random(min(w-rx, maxWidth)));
             int rh = int(random(min(h-ry, maxHeight)));
             MyRect mr = new MyRect(rx, ry, rw, rh, c);
