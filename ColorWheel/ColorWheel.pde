@@ -395,6 +395,13 @@ class ColorVariater
         color colorVariation = color(hue, saturation, brightness, alpha);
         return colorVariation;
     }
+    public color reduceAlpha(color raw)
+    {
+        float a = alpha(raw);
+        a -= 0.03;
+        a =  bowlimit(a, 0.0, 0.5);
+        return color(hue(raw), saturation(raw), brightness(raw), a);
+    }
     int bowlimit(int raw, int low, int hi)
     {
         if (raw < low)
@@ -420,6 +427,8 @@ class ColorVariater
         return raw;
     }
 }
+
+
 class PaintingSketch
 {
     PVector loc;
@@ -446,8 +455,11 @@ class PaintingSketch
         {
             createBaseColorRects();
             createFocalColorRects();
+            createSecondaryFocalColorLines();
             createSpice1ColorRects();
+            createSecondarySpice1ColorLines();
             createSpice2ColorRects();
+            createSecondarySpice2ColorLines();
             bob.setNotDirty();
         }
     }
@@ -520,6 +532,80 @@ class PaintingSketch
         }
         return createdRects;
     }
+
+
+    private void createSecondaryFocalColorLines()
+    {
+        int focalMaxWidth = w;
+        int focalMaxHeight = 10;
+        int focalCenterX = 0;
+        int focalCenterY = h-(h/10);
+        ColorVariater colorVariater = new ColorVariater(20, 90, 9, 0.002);
+        color fc1 = colorVariater.reduceAlpha(bob.getFocalColorVariation());
+
+        //horiz lines
+        focalColorRects.addAll(
+            createClusteredColorRectsHelper(Params.NUM_FOCALCOLOR_RECTS, focalCenterX, focalCenterY, focalMaxWidth, focalMaxHeight, fc1)
+            );
+
+        // vert lines
+        focalMaxWidth = 10;
+        focalMaxHeight = h;
+        focalCenterX = 30;
+        focalCenterY = w/10;
+        focalColorRects.addAll(
+            createClusteredColorRectsHelper(Params.NUM_FOCALCOLOR_RECTS, focalCenterX, focalCenterY, focalMaxWidth, focalMaxHeight, fc1)
+            );
+    }
+
+    private void createSecondarySpice1ColorLines()
+    {
+        int focalMaxWidth = w;
+        int focalMaxHeight = 10;
+        int focalCenterX = 0;
+        int focalCenterY = h-(h/10);
+        ColorVariater colorVariater = new ColorVariater(20, 90, 9, 0.002);
+        color sc1 = colorVariater.reduceAlpha(bob.getSpice1ColorVariation());
+        
+        //horiz lines
+        spice1ColorRects.addAll(
+            createClusteredColorRectsHelper(Params.NUM_SPICECOLOR_RECTS/4, focalCenterX, focalCenterY, focalMaxWidth, focalMaxHeight, sc1)
+            );
+
+        // vert lines
+        focalMaxWidth = 10;
+        focalMaxHeight = h;
+        focalCenterX = 30;
+        focalCenterY = w/10;
+        spice1ColorRects.addAll(
+            createClusteredColorRectsHelper(Params.NUM_SPICECOLOR_RECTS/4, focalCenterX, focalCenterY, focalMaxWidth, focalMaxHeight, sc1)
+            );
+    }
+
+    private void createSecondarySpice2ColorLines()
+    {
+        int focalMaxWidth = w;
+        int focalMaxHeight = 15;
+        int focalCenterX = 0;
+        int focalCenterY = h-(h/10);
+        ColorVariater colorVariater = new ColorVariater(20, 90, 9, 0.002);
+        color sc2 = colorVariater.reduceAlpha(bob.getSpice2ColorVariation());
+
+        //horiz lines
+        spice2ColorRects.addAll(
+            createClusteredColorRectsHelper(Params.NUM_SPICECOLOR_RECTS/4, focalCenterX, focalCenterY, focalMaxWidth, focalMaxHeight, sc2)
+            );
+
+        // vert lines
+        focalMaxWidth = 45;
+        focalMaxHeight = h;
+        focalCenterX = 30;
+        focalCenterY = w/10;
+        spice2ColorRects.addAll(
+            createClusteredColorRectsHelper(Params.NUM_SPICECOLOR_RECTS/4, focalCenterX, focalCenterY, focalMaxWidth, focalMaxHeight, sc2)
+            );
+    }
+
 
     private  List<MyRect> createClusteredColorRectsHelper(
         int numRects, 
