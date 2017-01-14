@@ -159,17 +159,17 @@ class ColorVariater
     color getRandomColorVariation(color pureColor)
     {
         int hue = int(hue(pureColor) + random(0, hueVariation));
-        hue = bowlimit(hue, 0, 360);
+        hue = constrain(hue, 0, 360);
 
         int brightness = int(brightness(pureColor) + random(0, brightnessVariation));
-        brightness = bowlimit(brightness, 0, 100);
+        brightness = constrain(brightness, 0, 100);
 
         int saturation = int(saturation(pureColor) + random(0, saturationVariation));
-        saturation = bowlimit(saturation, 0, 100);
+        saturation = constrain(saturation, 0, 100);
 
 
         float alpha = alpha(pureColor) + random(0, alphaVariation);
-        alpha = bowlimit(alpha, 0.0, 0.05);//0.0, 0.5
+        alpha = constrain(alpha, 0.0, 0.05);//0.0, 0.5
 
         color colorVariation = color(hue, saturation, brightness, alpha);
         return colorVariation;
@@ -178,33 +178,8 @@ class ColorVariater
     {
         float a = alpha(raw);
         a -= 0.03;
-        a =  bowlimit(a, 0.0, 0.5);
+        a =  constrain(a, 0.0, 0.5);
         return color(hue(raw), saturation(raw), brightness(raw), a);
-    }
-    // TODO can use constrain(raw, lo,hi) instead??
-    int bowlimit(int raw, int low, int hi)
-    {
-        if (raw < low)
-        {
-            return low;
-        }
-        if (raw > hi)
-        {
-            return hi;
-        }
-        return raw;
-    }
-    float bowlimit(float raw, float low, float hi)
-    {
-        if (raw < low)
-        {
-            return low;
-        }
-        if (raw > hi)
-        {
-            return hi;
-        }
-        return raw;
     }
 }
 
